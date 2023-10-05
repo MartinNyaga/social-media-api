@@ -11,6 +11,7 @@ class User(db.Model):
     username = db.Column(db.String)
     email = db.Column(db.String)
     password = db.Column(db.String)
+    profil_picture = db.Column(db.String)
     gender = db.Column(db.String)
     date_of_birth = db.Column(db.DateTime)
     identification_card = db.Column(db.Integer)
@@ -32,7 +33,7 @@ class Location(db.Model):
     city = db.Column(db.String)
     country = db.Column(db.String)
 
-    user = db.relationship('User', backref='locations', lazy=True)
+    
 
 
 class Post(db.Model):
@@ -41,11 +42,9 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     description = db.Column(db.String)
-    likes = db.Column(db.Integer)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
-    user = db.relationship('User', backref='posts', lazy=True)
     likes = db.relationship('Like', backref='post', lazy=True)
     comments = db.relationship('Comment', backref='post', lazy=True)
 
@@ -57,8 +56,8 @@ class Like(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
 
-    user = db.relationship('User', backref='likes', lazy=True)
-    post = db.relationship('Post', backref='likes', lazy=True)
+    liked_by_user = db.relationship('User', backref='likes', lazy=True)
+    liked_post = db.relationship('Post', backref='likes', lazy=True)
 
 
 
@@ -70,5 +69,4 @@ class Comment(db.Model):
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
     description = db.Column(db.String)
 
-    user = db.relationship('User', backref='comments', lazy=True)
-    post = db.relationship('Post', backref='comments', lazy=True)
+    
