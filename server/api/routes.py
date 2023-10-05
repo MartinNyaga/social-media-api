@@ -1,4 +1,5 @@
-from api import app, db, User, Location, Post, Like, Comment
+from api import app, db
+from .models import User, Location, Post, Like, Comment
 from flask import  request, jsonify, make_response
 import uuid 
 from  werkzeug.security import generate_password_hash, check_password_hash
@@ -36,7 +37,7 @@ def token_required(f):
 @app.route('/signup', methods =['POST'])
 def signup():
     
-    data = request.form
+    data = request.get_json()
   
     
     first_name = data.get('first_name')
@@ -82,7 +83,7 @@ def signup():
 @app.route('/login', methods =['POST'])
 def login():
     
-    auth = request.form
+    auth = request.get_json()
   
     if not auth or not auth.get('email') or not auth.get('password'):
         
