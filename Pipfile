@@ -16,6 +16,9 @@ Faker = "*"
 flask-swagger-ui = "*"
 gunicorn = "*"
 python-dotenv = "*"
+werkzeug = "*"
+pyjwt = "*"
+flask-wtf = "*"
 
 [dev-packages]
 
