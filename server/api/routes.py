@@ -121,6 +121,153 @@ def login():
     )
 
 
+@app.route('/')
+def home():
+    return make_response(jsonify({"msg": "CONNECTING"}), 200)
+
+
+
+@app.route('/users', methods=['GET'])
+def get_users():
+    users = User.query.all()
+    return jsonify([user.serialize() for user in users])
+
+@app.route('/users/<int:user_id>', methods=['GET'])
+def get_user(user_id):
+    user = User.query.get(user_id)
+    return jsonify(user.serialize())
+
+
+@app.route('/users/<int:user_id>', methods=['PUT'])
+def update_user(user_id):
+    user = User.query.get(user_id)
+    data = request.get_json()
+    for key, value in data.items():
+        setattr(user, key, value)
+    db.session.commit()
+    return jsonify(user.serialize())
+
+@app.route('/users/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    user = User.query.get(user_id)
+    db.session.delete(user)
+    db.session.commit()
+    return '', 204
+
+@app.route('/locations', methods=['GET'])
+def get_locations():
+    locations = Location.query.all()
+    return jsonify([location.serialize() for location in locations])
+
+@app.route('/locations/<int:location_id>', methods=['GET'])
+def get_location(location_id):
+    location = Location.query.get(location_id)
+    return jsonify(location.serialize())
+
+@app.route('/locations', methods=['POST'])
+def create_location():
+    data = request.get_json()
+    new_location = Location(**data)
+    db.session.add(new_location)
+    db.session.commit()
+    return jsonify(new_location.serialize())
+
+@app.route('/locations/<int:location_id>', methods=['PUT'])
+def update_location(location_id):
+    location = Location.query.get(location_id)
+    data = request.get_json()
+    for key, value in data.items():
+        setattr(location, key, value)
+    db.session.commit()
+    return jsonify(location.serialize())
+
+@app.route('/locations/<int:location_id>', methods=['DELETE'])
+def delete_location(location_id):
+    location = Location.query.get(location_id)
+    db.session.delete(location)
+    db.session.commit()
+    return '', 204
+
+@app.route('/posts', methods=['GET'])
+def get_posts():
+    posts = Post.query.all()
+    return jsonify([post.serialize() for post in posts])
+
+@app.route('/posts/<int:post_id>', methods=['GET'])
+def get_post(post_id):
+    post = Post.query.get(post_id)
+    return jsonify(post.serialize())
+
+@app.route('/posts', methods=['POST'])
+def create_post():
+    data = request.get_json()
+    new_post = Post(**data)
+    db.session.add(new_post)
+    db.session.commit()
+    return jsonify(new_post.serialize())
+
+@app.route('/posts/<int:post_id>', methods=['PUT'])
+def update_post(post_id):
+    post = Post.query.get(post_id)
+    data = request.get_json()
+    for key, value in data.items():
+        setattr(post, key, value)
+        db.session.commit()
+        return jsonify(post.serialize())
+
+@app.route('/posts/<int:post_id>', methods=['DELETE'])
+def delete_post(post_id):
+        post = Post.query.get(post_id)
+        db.session.delete(post)
+        db.session.commit()
+        return '', 204
+
+@app.route('/likes', methods=['GET'])
+def get_likes():
+        likes = Like.query.all()
+        return jsonify([like.serialize() for like in likes])
+
+@app.route('/likes/<int:like_id>', methods=['GET'])
+def get_like(like_id):
+        like = Like.query.get(like_id)
+        return jsonify(like.serialize())
+
+@app.route('/likes', methods=['POST'])
+def create_like():
+        data = request.get_json()
+        new_like = Like(**data)
+        db.session.add(new_like)
+        db.session.commit()
+        return jsonify(new_like.serialize())
+
+@app.route('/likes/<int:like_id>', methods=['PUT'])
+def update_like(like_id):
+        like = Like.query.get(like_id)
+        data = request.get_json()
+        for key, value in data.items():
+            setattr(like, key, value)
+            db.session.commit()
+            return jsonify(like.serialize())
+
+@app.route('/likes/<int:like_id>', methods=['DELETE'])
+def delete_like(like_id):
+            like = Like.query.get(like_id)
+            db.session.delete(like)
+            db.session.commit()
+            return '', 204
+
+
+@app.route('/comments/<int:id>', methods=['GET'])
+def get_comment(id):
+    comment = Comment.query.get_or_404(id)
+    return jsonify({
+        'id': comment.id,
+        'user_id': comment.user_id,
+        'post_id': comment.post_id,
+        'description': comment.description
+    })
+
+
 
 
 
