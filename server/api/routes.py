@@ -97,9 +97,7 @@ class PostResource(Resource):
 
 @ns.route("/users")
 class UsersListRersource(Resource):
-    method_decorators = [jwt_required()]
-
-    @ns.doc(security="jsonWebToken")
+    
     
     @ns.marshal_list_with(user_model)
     def get(self):
