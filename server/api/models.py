@@ -13,17 +13,17 @@ class User(db.Model):
     username = db.Column(db.String)
     email = db.Column(db.String)
     password = db.Column(db.String)
-    profil_picture = db.Column(db.String)
+    profile_picture = db.Column(db.String)
     gender = db.Column(db.String)
     date_of_birth = db.Column(db.DateTime)
     identification_card = db.Column(db.Integer)
-    contact = db.Column(db.Integer)
+    contact = db.Column(db.String)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     updated_at = db.Column(
         db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False
     )
 
-    locations = db.relationship("Location", backref="user", lazy=True)
+    locations = db.relationship("Location", backref="user")
     posts = db.relationship("Post", backref="user")
     liked_posts = db.relationship(
         "Post", secondary="likes", back_populates="user_likes"
@@ -55,6 +55,11 @@ class Post(db.Model):
         "User", secondary="likes", back_populates="liked_posts"
     )
     # comments = db.relationship("Comment", backref="post", lazy=True)
+
+    @property
+    def likes(self):
+        post_likes = Like.query.filter_by(post_id=self.id).all()
+        return len(post_likes)
 
 
 class Like(db.Model):

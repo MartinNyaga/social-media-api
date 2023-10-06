@@ -14,6 +14,13 @@ with app.app_context():
     Comment.query.delete()
     db.session.commit()
 
+    profile_picts = [
+        "http://uitheme.net/sociala/images/user-7.png",
+        "http://uitheme.net/sociala/images/t-10.jpg",
+        "http://uitheme.net/sociala/images/user-12.png",
+        "http://uitheme.net/sociala/images/user-2.png",
+    ]
+
     users = []
     for i in range(20):
         user = User(
@@ -28,6 +35,7 @@ with app.app_context():
             contact=fake.random_number(digits=10),
             created_at=fake.date_time(),
             updated_at=fake.date_time(),
+            profile_picture=random.choice(profile_picts),
         )
         users.append(user)
 
