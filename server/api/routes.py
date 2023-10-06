@@ -1,6 +1,7 @@
 from api import app, db
 from .models import User, Location, Post, Like, Comment
 from flask import request, jsonify, make_response
+from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token
 import uuid
 from datetime import date
 
@@ -20,7 +21,15 @@ from .api_models import (
     like_model,
 )
 
-ns = Namespace("/")
+authorizations = {
+    "jsonWebToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
+    }
+}
+
+ns = Namespace("/", authorizations=authorizations)
 
 
 class SignupResource(Resource):
@@ -82,6 +91,7 @@ class PostResource(Resource):
 
 @ns.route("/users")
 class UsersListRersource(Resource):
+    
     @ns.marshal_list_with(user_model)
     def get(self):
         users = User.query.all()
@@ -142,7 +152,16 @@ class UserResourse(Resource):
 class UserLoginResource(Resource):
     @ns.expect(user_login_input_model)
     def post(self):
-        pass
+        user = User.query.filter_by(username=ns.payload["username"]).first()
+        if not user:
+            return {"error": "User does not exist"}, 401
+        if not check_password_hash(user.password, ns.payload["password"]):
+            return {"error": "Incorrect password, Try Again"}, 401
+        user_dic = {"id": user.id,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                    "profile_picture": user.profile_picture}
+        return {"access_token": create_access_token(user_dic)}
 
 
 @ns.route("/likes")
