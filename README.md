@@ -6,10 +6,10 @@
 
 **Technologies Used Within The Creation Of This Project**
 <li>Python
-<li>REACT
-<li>DBDiagram.IO
+<li>Flask
+<li>Flask SQLAlchemy
 <li>JSON
-<li>FORMIK 
+
 
 ### The Guideline To The Creation Of **CON_NECT**
 
@@ -93,7 +93,7 @@ To make a contribution to the code used or any suggestions you can click on the 
 
 
 #### License
-Copyright (c) {{ 2023 }}, {{ LEVINA NJAMBI }}
+Copyright (c) {{ 2023 }}, {{CON_NECT.org}}
 
 Permission to use, copy, modify, and/or distribute this software for any
 purpose with or without fee is hereby granted, provided that the above
