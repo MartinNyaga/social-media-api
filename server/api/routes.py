@@ -39,6 +39,9 @@ class SignupResource(Resource):
 
 @ns.route("/posts")
 class PostListResource(Resource):
+    method_decorators = [jwt_required()]
+
+    @ns.doc(security="jsonWebToken")
     @ns.marshal_list_with(post_model)
     def get(self):
         posts = Post.query.all()
@@ -58,6 +61,9 @@ class PostListResource(Resource):
 
 @ns.route("/posts/<int:id>")
 class PostResource(Resource):
+    method_decorators = [jwt_required()]
+
+    @ns.doc(security="jsonWebToken")
     @ns.marshal_with(post_model)
     def get(self, id):
         post = Post.query.filter_by(id=id).first()
@@ -91,6 +97,9 @@ class PostResource(Resource):
 
 @ns.route("/users")
 class UsersListRersource(Resource):
+    method_decorators = [jwt_required()]
+
+    @ns.doc(security="jsonWebToken")
     
     @ns.marshal_list_with(user_model)
     def get(self):
@@ -126,6 +135,9 @@ class UsersListRersource(Resource):
 
 @ns.route("/users/<int:id>")
 class UserResourse(Resource):
+    method_decorators = [jwt_required()]
+
+    @ns.doc(security="jsonWebToken")
     @ns.marshal_with(user_model)
     def get(self, id):
         user = User.query.filter_by(id=id).first()
@@ -166,6 +178,9 @@ class UserLoginResource(Resource):
 
 @ns.route("/likes")
 class LikesResource(Resource):
+    method_decorators = [jwt_required()]
+
+    @ns.doc(security="jsonWebToken")
     @ns.expect(likes_input_model)
     @ns.marshal_with(like_model)
     def post(self):
