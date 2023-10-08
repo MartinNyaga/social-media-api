@@ -4,10 +4,10 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-flask = "*"
+flask = "2.2.3"
 flask-migrate = "*"
 flask-restful = "*"
-flask-sqlalchemy = "*"
+flask-sqlalchemy = "3.0.2"
 importlib-metadata = "*"
 importlib-resources = "*"
 ipdb = "*"
@@ -16,10 +16,12 @@ Faker = "*"
 flask-swagger-ui = "*"
 gunicorn = "*"
 python-dotenv = "*"
-werkzeug = "*"
+werkzeug = "2.2.2"
 pyjwt = "*"
 flask-wtf = "*"
-
+flask-restx = "*"
+flask-jwt-extended = "*"
+flask-cors = "*"
 [dev-packages]
 
 [requires]
