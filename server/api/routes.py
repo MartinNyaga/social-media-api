@@ -22,11 +22,7 @@ from .api_models import (
 )
 
 authorizations = {
-    "jsonWebToken": {
-        "type": "apiKey",
-        "in": "header",
-        "name": "Authorization"
-    }
+    "jsonWebToken": {"type": "apiKey", "in": "header", "name": "Authorization"}
 }
 
 ns = Namespace("/", authorizations=authorizations)
@@ -41,7 +37,7 @@ class SignupResource(Resource):
 class PostListResource(Resource):
     method_decorators = [jwt_required()]
 
-    @ns.doc(security="jsonWebToken")
+    # @ns.doc(security="jsonWebToken")
     @ns.marshal_list_with(post_model)
     def get(self):
         posts = Post.query.all()
@@ -88,6 +84,9 @@ class PostResource(Resource):
     def delete(self, id):
         post = Post.query.filter_by(id=id).first()
         if post:
+            likes = Like.query.filter_by(post_id=id).all()
+            for like in likes:
+                db.session.delete(like)
             db.session.delete(post)
             db.session.commit()
             return {}, 204
@@ -97,8 +96,6 @@ class PostResource(Resource):
 
 @ns.route("/users")
 class UsersListRersource(Resource):
-    
-    
     @ns.marshal_list_with(user_model)
     def get(self):
         users = User.query.all()
@@ -167,10 +164,12 @@ class UserLoginResource(Resource):
             return {"error": "User does not exist"}, 401
         if not check_password_hash(user.password, ns.payload["password"]):
             return {"error": "Incorrect password, Try Again"}, 401
-        user_dic = {"id": user.id,
-                    "first_name": user.first_name,
-                    "last_name": user.last_name,
-                    "profile_picture": user.profile_picture}
+        user_dic = {
+            "id": user.id,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "profile_picture": user.profile_picture,
+        }
         return {"access_token": create_access_token(user_dic)}
 
 
@@ -180,14 +179,39 @@ class LikesResource(Resource):
 
     @ns.doc(security="jsonWebToken")
     @ns.expect(likes_input_model)
-    @ns.marshal_with(like_model)
+    @ns.marshal_with(post_model)
     def post(self):
         try:
-            new_like = Like(
-                user_id=ns.payload["user_id"], post_id=ns.payload["post_id"]
-            )
-            db.session.add(new_like)
-            db.session.commit()
-            return new_like, 201
+            user_id = ns.payload["user_id"]
+            post_id = ns.payload["post_id"]
+            like = Like.query.filter_by(user_id=user_id, post_id=post_id).first()
+
+            if not like:
+                new_like = Like(user_id=user_id, post_id=post_id)
+                db.session.add(new_like)
+                db.session.commit()
+                post = Post.query.filter_by(id=ns.payload["post_id"]).first()
+                return post, 201
+            else:
+                db.session.delete(like)
+                db.session.commit()
+                post = Post.query.filter_by(id=ns.payload["post_id"]).first()
+                return post, 200
+
         except Exception:
             return {"error": f"Like not created error"}, 400
+
+
+@ns.route("/users/<int:id>/posts")
+class UserLikesResource(Resource):
+    method_decorators = [jwt_required()]
+
+    @ns.doc(security="jsonWebToken")
+    @ns.marshal_list_with(post_model)
+    def get(self, id):
+        user = User.query.filter_by(id=id).first()
+        if user:
+            posts = user.liked_posts
+            return posts, 200
+        else:
+            return {"error": "User not found"}, 400
