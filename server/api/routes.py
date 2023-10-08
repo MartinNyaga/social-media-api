@@ -144,10 +144,17 @@ class UserResourse(Resource):
     @ns.marshal_with(user_model)
     @ns.expect(create_user_model)
     def patch(self, id):
+        dob = date.fromisoformat(ns.payload["date_of_birth"])
+        hashed_password = generate_password_hash(password=ns.payload["password"])
         user = User.query.filter_by(id=id).first()
         if user:
             for attr in ns.payload:
-                setattr(user, attr, ns.payload[attr])
+                if attr == "date_of_birth":
+                    setattr(user, attr, dob)
+                elif attr == "password":
+                    setattr(user, attr, hashed_password)
+                else:
+                    setattr(user, attr, ns.payload[attr])
             db.session.add(user)
             db.session.commit()
             return user, 200
