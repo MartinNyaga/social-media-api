@@ -15,6 +15,7 @@ class User(db.Model):
     password = db.Column(db.String)
     profile_picture = db.Column(db.String)
     gender = db.Column(db.String)
+    bio = db.Column(db.String(500))
     date_of_birth = db.Column(db.DateTime)
     identification_card = db.Column(db.Integer)
     contact = db.Column(db.String)
