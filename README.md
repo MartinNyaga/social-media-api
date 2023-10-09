@@ -19,7 +19,7 @@
 
 ## Introduction
 
-This is a social media app designed to [briefly describe the main purpose or unique feature of your app]. It provides users with a platform to connect, share updates, and engage with others in a social networking environment.
+This is a social media app api designed for the con-nect web app. It provides users with a platform to connect, share updates, and engage with others in a social networking environment.
 
 
 ## Installation
